@@ -28,14 +28,14 @@ export const AuthProvider = ({ children }) => {
     setLoading(false)
   }, [])
 
-  const login = async (email, password) => {
+  const login = async (formData) => {
     try {
-      const response = await authAPI.login(email, password)
+      const response = await authAPI.login(formData.email, formData.password)
       const { token } = response.data
-      
+
       localStorage.setItem('token', token)
       setIsAuthenticated(true)
-      
+
       return { success: true }
     } catch (error) {
       const message = error.response?.data?.message || 'Login failed'
@@ -44,14 +44,14 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const register = async (username, email, password) => {
+  const register = async (formData) => {
     try {
-      const response = await authAPI.register(username, email, password)
+      const response = await authAPI.register(formData.name, formData.email, formData.password)
       const { token } = response.data
-      
+
       localStorage.setItem('token', token)
       setIsAuthenticated(true)
-      
+
       return { success: true }
     } catch (error) {
       const message = error.response?.data?.message || 'Registration failed'

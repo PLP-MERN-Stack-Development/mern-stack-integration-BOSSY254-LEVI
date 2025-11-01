@@ -1,5 +1,6 @@
 // server/models/Category.js
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const CategorySchema = new mongoose.Schema({
   name: {
@@ -8,14 +9,30 @@ const CategorySchema = new mongoose.Schema({
     trim: true,
     unique: true
   },
+  slug: {
+    type: String,
+    unique: true
+  },
   description: {
     type: String,
     trim: true
+  },
+  color: {
+    type: String,
+    default: '#007bff'
   },
   createdAt: {
     type: Date,
     default: Date.now
   }
+});
+
+// Create slug from name before saving
+CategorySchema.pre('save', function(next) {
+  if (this.isModified('name')) {
+    this.slug = slugify(this.name, { lower: true, strict: true });
+  }
+  next();
 });
 
 module.exports = mongoose.model('Category', CategorySchema);

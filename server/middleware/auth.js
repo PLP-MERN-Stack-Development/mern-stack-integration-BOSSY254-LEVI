@@ -8,9 +8,11 @@ const asyncHandler = require('./async');
 const protect = asyncHandler(async (req, res, next) => {
   let token;
 
-  // Get token from Authorization header or cookie
+  // Get token from Authorization header, x-auth-token header, or cookie
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.headers['x-auth-token']) {
+    token = req.headers['x-auth-token'];
   } else if (req.cookies && req.cookies.token) {
     token = req.cookies.token;
   }

@@ -1,11 +1,16 @@
 // server/models/Post.js
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const PostSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
     trim: true
+  },
+  slug: {
+    type: String,
+    unique: true
   },
   content: {
     type: String,
@@ -47,7 +52,11 @@ const PostSchema = new mongoose.Schema({
   }
 });
 
+// Create slug from title before saving
 PostSchema.pre('save', function(next) {
+  if (this.isModified('title')) {
+    this.slug = slugify(this.title, { lower: true, strict: true });
+  }
   this.updatedAt = Date.now();
   next();
 });
